@@ -1,158 +1,234 @@
-import matplotlib.pyplot as plt
 import tensorflow as tf
-from tensorflow.keras import layers
-from tensorflow.keras.models import Sequential
+from tensorflow.keras import layers, models, optimizers
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+import matplotlib.pyplot as plt
+import os
+from sklearn.utils import class_weight
+import numpy as np
 
 # ==========================================
-# 1. CẤU HÌNH THAM SỐ (CONFIGURATION)
+# 1. CẤU HÌNH TỐI ƯU (HYPERPARAMETERS)
 # ==========================================
-# Đổi đường dẫn này thành đường dẫn chứa folder dataset của bạn
-DATASET_PATH = 'dataset'
-IMG_SIZE = (224, 224)     # Kích thước chuẩn của MobileNetV2
-BATCH_SIZE = 32           # Số lượng ảnh học trong 1 lần cập nhật trọng số
-EPOCHS = 20               # Số vòng lặp huấn luyện (tùy chỉnh dựa trên độ chính xác)
-LEARNING_RATE = 0.0001    # Tốc độ học (để thấp để tránh phá vỡ trọng số pre-trained)
+DATA_DIR = 'dataset'
+IMG_SIZE = (300, 300)  # EfficientNetB3 tối ưu ở kích thước 300x300
+BATCH_SIZE = 16        # Giảm batch size để vừa VRAM 8GB (vì ảnh to hơn)
+EPOCHS_HEAD = 10       # Số epoch train khởi động
+EPOCHS_FINE = 50       # Số epoch train tinh chỉnh (sẽ dừng sớm nếu cần)
 
-# Kiểm tra GPU (Nếu có)
-print(f"TensorFlow Version: {tf.__version__}")
-print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+# Kiểm tra GPU
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        print(f"✅ Đang chạy trên GPU: {gpus[0]}")
+    except RuntimeError as e:
+        print(e)
 
 # ==========================================
-# 2. LOAD VÀ TIỀN XỬ LÝ DỮ LIỆU (DATA LOADING)
+# 2. LOAD DATASET CHUẨN
 # ==========================================
-print("\n--- Đang tải dữ liệu ---")
+print("\n--- Đang tải và xử lý dữ liệu ---")
 
-# Tự động chia Train (80%) và Validation (20%)
 train_ds = tf.keras.utils.image_dataset_from_directory(
-    DATASET_PATH,
+    DATA_DIR,
     validation_split=0.2,
     subset="training",
     seed=123,
     image_size=IMG_SIZE,
-    batch_size=BATCH_SIZE
+    batch_size=BATCH_SIZE,
+    label_mode='int' # Dùng sparse categorical crossentropy cho tiết kiệm RAM
 )
 
 val_ds = tf.keras.utils.image_dataset_from_directory(
-    DATASET_PATH,
+    DATA_DIR,
     validation_split=0.2,
     subset="validation",
     seed=123,
     image_size=IMG_SIZE,
-    batch_size=BATCH_SIZE
+    batch_size=BATCH_SIZE,
+    label_mode='int'
 )
 
 class_names = train_ds.class_names
 num_classes = len(class_names)
-print(f"Phát hiện {num_classes} loại bệnh: {class_names}")
+print(f"Classes: {class_names}")
+# ==========================================
+# 2.5. TÍNH TOÁN CLASS WEIGHTS (FIX LỖI JSON)
+# ==========================================
+print("\n--- Đang tính toán Class Weights ---")
 
-# Tối ưu hóa hiệu năng load dữ liệu (Caching & Prefetching)
+# Lấy nhãn từ tập train để tính toán
+# Lưu ý: train_ds là dạng Batch, cần nối lại
+train_labels = []
+for images, labels in train_ds.unbatch():
+    train_labels.append(labels.numpy())
+
+train_labels = np.array(train_labels)
+
+# Tính toán trọng số
+class_weights = class_weight.compute_class_weight(
+    class_weight='balanced',
+    classes=np.unique(train_labels),
+    y=train_labels
+)
+
+# QUAN TRỌNG: Chuyển về float thuần của Python để tránh lỗi JSON Serialized
+class_weights_dict = {i : float(w) for i, w in enumerate(class_weights)}
+
+print("Class Weights (Đã fix lỗi):")
+print(class_weights_dict)
+
+# Tối ưu hiệu năng pipeline
 AUTOTUNE = tf.data.AUTOTUNE
 train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
 val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 # ==========================================
-# 3. TĂNG CƯỜNG DỮ LIỆU (DATA AUGMENTATION)
+# 3. DATA AUGMENTATION NÂNG CAO
 # ==========================================
-# Giúp model không học vẹt (overfitting) bằng cách xoay, lật ảnh ngẫu nhiên
-data_augmentation = Sequential([
-  layers.RandomFlip("horizontal"),
-  layers.RandomRotation(0.1),
-  layers.RandomZoom(0.1),
+data_augmentation = models.Sequential([
+    layers.RandomFlip("horizontal_and_vertical"),
+    layers.RandomRotation(0.2),       # Xoay tối đa 20%
+    layers.RandomZoom(0.2),           # Zoom
+    layers.RandomContrast(0.2),       # Thay đổi tương phản (quan trọng cho da liễu)
+    layers.RandomBrightness(0.2),     # Thay đổi độ sáng
 ])
 
 # ==========================================
-# 4. XÂY DỰNG MODEL (TRANSFER LEARNING)
+# 4. XÂY DỰNG MODEL (EFFICIENTNET B3)
 # ==========================================
-print("\n--- Đang xây dựng Model ---")
+print("\n--- Khởi tạo EfficientNetB3 ---")
 
-# Tải MobileNetV2 đã train trên ImageNet, bỏ lớp đầu ra (include_top=False)
-base_model = tf.keras.applications.MobileNetV2(
+# Tải base model
+base_model = tf.keras.applications.EfficientNetB3(
     input_shape=IMG_SIZE + (3,),
     include_top=False,
     weights='imagenet'
 )
 
-# Đóng băng base_model để không train lại các đặc trưng cơ bản ban đầu
+# Ban đầu đóng băng toàn bộ base
 base_model.trainable = False
 
-# Tạo kiến trúc model hoàn chỉnh
-model = Sequential([
-  layers.Input(shape=IMG_SIZE + (3,)),
-  data_augmentation,                # Lớp tăng cường dữ liệu
-  layers.Rescaling(1./127.5, offset=-1), # Chuẩn hóa pixel về khoảng [-1, 1]
-  base_model,                       # MobileNetV2 core
-  layers.GlobalAveragePooling2D(),  # Giảm chiều dữ liệu
-  layers.Dropout(0.2),              # Tránh overfitting
-  layers.Dense(num_classes, activation='softmax') # Lớp phân loại cuối cùng
-])
+inputs = layers.Input(shape=IMG_SIZE + (3,))
+x = data_augmentation(inputs)
 
-model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE),
-    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
-    metrics=['accuracy']
-)
+# EfficientNet có sẵn lớp xử lý input, nhưng ta dùng preprocess_input cho chắc chắn nếu cần
+# x = tf.keras.applications.efficientnet.preprocess_input(x)
 
-model.summary()
+x = base_model(x, training=False) # training=False để giữ nguyên BatchNormalization
+x = layers.GlobalAveragePooling2D()(x)
+x = layers.BatchNormalization()(x) # Giúp ổn định training
+x = layers.Dropout(0.3)(x)         # Tăng dropout lên 0.3 để chống overfitting
+outputs = layers.Dense(num_classes, activation='softmax')(x)
+
+model = models.Model(inputs, outputs)
 
 # ==========================================
-# 5. HUẤN LUYỆN MODEL (TRAINING)
+# 5. CÁC CALLBACKS QUAN TRỌNG
 # ==========================================
-print("\n--- Bắt đầu huấn luyện ---")
-
-# Callback để lưu model tốt nhất trong quá trình train
-checkpoint_path = "best_skin_model.keras"
-checkpoint = tf.keras.callbacks.ModelCheckpoint(
-    checkpoint_path,
+# Lưu model tốt nhất (không phải model cuối cùng)
+checkpoint = ModelCheckpoint(
+    "best_skin_model_v2.h5",
     monitor='val_accuracy',
     save_best_only=True,
+    save_weights_only=True,
     mode='max',
     verbose=1
 )
 
-# Callback dừng sớm nếu model không tốt lên sau 5 epoch
-early_stopping = tf.keras.callbacks.EarlyStopping(
+# Dừng train nếu không tiến bộ sau 7 epoch
+early_stopping = EarlyStopping(
     monitor='val_loss',
-    patience=5,
-    restore_best_weights=True
+    patience=7,
+    restore_best_weights=True,
+    verbose=1
 )
 
-history = model.fit(
-  train_ds,
-  validation_data=val_ds,
-  epochs=EPOCHS,
-  callbacks=[checkpoint, early_stopping]
+# Giảm Learning Rate nếu Loss đi ngang (giúp hội tụ sâu hơn)
+lr_scheduler = ReduceLROnPlateau(
+    monitor='val_loss',
+    factor=0.2,    # Giảm 5 lần (nhân 0.2)
+    patience=3,    # Sau 3 epoch không khá hơn thì giảm
+    min_lr=1e-6,
+    verbose=1
 )
 
 # ==========================================
-# 6. TRỰC QUAN HÓA KẾT QUẢ (VISUALIZATION)
+# 6. GIAI ĐOẠN 1: WARM-UP (TRAIN HEAD)
 # ==========================================
-# Vẽ biểu đồ Accuracy và Loss để đưa vào báo cáo Đồ án
-acc = history.history['accuracy']
-val_acc = history.history['val_accuracy']
-loss = history.history['loss']
-val_loss = history.history['val_loss']
-epochs_range = range(len(acc))
+print("\n🔥 GIAI ĐOẠN 1: Train lớp Classifier (Warm-up)...")
+model.compile(
+    optimizer=optimizers.Adam(learning_rate=1e-3), # LR ban đầu lớn
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+history_1 = model.fit(
+    train_ds,
+    validation_data=val_ds,
+    epochs=EPOCHS_HEAD,
+    callbacks=[checkpoint] # Chỉ lưu checkpoint, chưa cần giảm LR
+)
+
+# ==========================================
+# 7. GIAI ĐOẠN 2: FINE-TUNING TOÀN BỘ
+# ==========================================
+print("\n🔥🔥 GIAI ĐOẠN 2: Unfreeze toàn bộ và Train sâu...")
+
+# Mở khóa toàn bộ model để học các đặc trưng chi tiết của da
+base_model.trainable = True
+
+# Quan trọng: Khi fine-tune phải dùng Learning Rate RẤT NHỎ
+# Nếu không sẽ phá hỏng các trọng số đã học ở ImageNet
+model.compile(
+    optimizer=optimizers.Adam(learning_rate=1e-4), # Nhỏ hơn 10 lần
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Nối tiếp history
+total_epochs = EPOCHS_HEAD + EPOCHS_FINE
+
+history_2 = model.fit(
+    train_ds,
+    validation_data=val_ds,
+    initial_epoch=history_1.epoch[-1],
+    epochs=total_epochs,
+    callbacks=[checkpoint, early_stopping, lr_scheduler], # Thêm đầy đủ "vũ khí"
+    class_weight=class_weights_dict
+)
+
+# ==========================================
+# 8. VẼ BIỂU ĐỒ BÁO CÁO
+# ==========================================
+acc = history_1.history['accuracy'] + history_2.history['accuracy']
+val_acc = history_1.history['val_accuracy'] + history_2.history['val_accuracy']
+loss = history_1.history['loss'] + history_2.history['loss']
+val_loss = history_1.history['val_loss'] + history_2.history['val_loss']
 
 plt.figure(figsize=(12, 6))
 
 plt.subplot(1, 2, 1)
-plt.plot(epochs_range, acc, label='Training Accuracy')
-plt.plot(epochs_range, val_acc, label='Validation Accuracy')
+plt.plot(acc, label='Training Accuracy')
+plt.plot(val_acc, label='Validation Accuracy')
+# Vẽ đường ngăn cách 2 giai đoạn
+plt.axvline(x=EPOCHS_HEAD-1, color='green', linestyle='--', label='Start Fine-Tuning')
 plt.legend(loc='lower right')
-plt.title('Training and Validation Accuracy')
+plt.title('Training Accuracy (EfficientNetB3)')
 
 plt.subplot(1, 2, 2)
-plt.plot(epochs_range, loss, label='Training Loss')
-plt.plot(epochs_range, val_loss, label='Validation Loss')
+plt.plot(loss, label='Training Loss')
+plt.plot(val_loss, label='Validation Loss')
+plt.axvline(x=EPOCHS_HEAD-1, color='green', linestyle='--')
 plt.legend(loc='upper right')
-plt.title('Training and Validation Loss')
+plt.title('Training Loss')
 
-# Lưu biểu đồ
-plt.savefig('training_history.png')
-print("\n--- Đã lưu biểu đồ vào training_history.png ---")
-print(f"--- Đã lưu model tốt nhất vào {checkpoint_path} ---")
+plt.savefig('training_result_optimized.png')
+print("\n✅ Đã hoàn tất! Model lưu tại: best_skin_model_v2.keras")
+print("Biểu đồ kết quả: training_result_optimized.png")
 
-# Lưu tên các class vào file text để load lại sau này
+# Lưu lại class names
 with open('class_names.txt', 'w') as f:
     for cls in class_names:
         f.write(f"{cls}\n")

@@ -208,3 +208,4 @@ __marimo__/
 /dataset
 /.idea
 *.zip
+/utils/dataset_backup_excess
