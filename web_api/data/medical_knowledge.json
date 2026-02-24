@@ -1,0 +1,227 @@
+{
+  "Acne and Rosacea Photos": {
+    "severity": "Mild",
+    "first_aid": [
+      "Wash the affected area gently with a mild cleanser and lukewarm water.",
+      "Apply over-the-counter treatments containing benzoyl peroxide or salicylic acid.",
+      "Avoid popping, squeezing, or picking at the pimples to prevent scarring and infection."
+    ],
+    "warning": "If the condition is painful, cystic, or does not improve with over-the-counter treatments, consult a dermatologist."
+  },
+  "Actinic Keratosis Basal Cell Carcinoma and other Malignant Lesions": {
+    "severity": "Severe",
+    "first_aid": [
+      "Do not attempt to treat, scratch, or remove the lesion at home.",
+      "Keep the area clean and dry.",
+      "Protect the affected area from sun exposure by wearing protective clothing and sunscreen."
+    ],
+    "warning": "These are potentially cancerous or precancerous lesions. Seek immediate evaluation from a dermatologist for a biopsy and proper medical treatment."
+  },
+  "Atopic Dermatitis Photos": {
+    "severity": "Moderate",
+    "first_aid": [
+      "Apply a thick layer of fragrance-free moisturizer or emollient immediately after bathing.",
+      "Take short, lukewarm baths or showers instead of hot ones.",
+      "Use mild, unscented soap and avoid harsh scrubbing."
+    ],
+    "warning": "If the skin becomes infected (oozing pus, yellow crusts) or if itching prevents sleep, seek medical attention."
+  },
+  "Basal Cell Carcinoma (BCC)": {
+    "severity": "Severe",
+    "first_aid": [
+      "There is no home first aid for suspected skin cancer. Do not apply any home remedies.",
+      "Keep the lesion clean and avoid picking at it if it bleeds or crusts over.",
+      "Cover with a sterile bandage if it is actively bleeding."
+    ],
+    "warning": "BCC is a type of skin cancer. You must schedule an appointment with a dermatologist for diagnosis and surgical removal."
+  },
+  "Benign Keratosis-like Lesions (BKL)": {
+    "severity": "Mild",
+    "first_aid": [
+      "These are generally harmless growths. Leave them alone.",
+      "Do not try to scratch, pick, or freeze them off at home.",
+      "If they become irritated by clothing, cover them loosely with a bandage."
+    ],
+    "warning": "If the lesion changes in size, color, shape, or starts bleeding spontaneously, have it checked by a doctor to rule out malignancy."
+  },
+  "Bullous Disease Photos": {
+    "severity": "Severe",
+    "first_aid": [
+      "Do not pop or puncture the blisters, as the intact skin protects against infection.",
+      "Cover the area loosely with a sterile, non-stick dressing.",
+      "Keep the skin clean and avoid tight clothing that might rub the blisters."
+    ],
+    "warning": "Autoimmune blistering diseases require prescription medications (like systemic corticosteroids). See a doctor immediately."
+  },
+  "Cellulitis Impetigo and other Bacterial Infections": {
+    "severity": "Moderate to Severe",
+    "first_aid": [
+      "Wash the area gently with soap and water.",
+      "Apply a warm, moist compress to the affected area for 15-20 minutes to relieve pain.",
+      "Cover any open or oozing sores with a sterile bandage to prevent spreading."
+    ],
+    "warning": "Bacterial infections can spread rapidly to the bloodstream. If you experience fever, chills, or rapidly spreading redness, go to the emergency room."
+  },
+  "Eczema Photos": {
+    "severity": "Moderate",
+    "first_aid": [
+      "Moisturize the skin multiple times a day with thick creams or ointments.",
+      "Apply over-the-counter hydrocortisone cream (1%) to itchy areas for a few days.",
+      "Avoid known triggers such as extreme temperatures, harsh soaps, or rough fabrics."
+    ],
+    "warning": "Consult a doctor if over-the-counter treatments fail or if signs of bacterial infection appear."
+  },
+  "Exanthems and Drug Eruptions": {
+    "severity": "Moderate to Severe",
+    "first_aid": [
+      "Stop taking any newly introduced over-the-counter medications or supplements immediately.",
+      "Take cool showers and apply calamine lotion to soothe the rash.",
+      "Take an over-the-counter oral antihistamine to reduce itching."
+    ],
+    "warning": "If the rash is accompanied by fever, difficulty breathing, swelling of the face/tongue, or blisters on mucous membranes, seek emergency medical care immediately."
+  },
+  "Hair Loss Photos Alopecia and other Hair Diseases": {
+    "severity": "Mild",
+    "first_aid": [
+      "Handle hair gently. Avoid tight hairstyles, harsh chemical treatments, and excessive heat styling.",
+      "Maintain a balanced diet rich in iron, protein, and vitamins.",
+      "Use a mild shampoo and avoid rubbing the scalp vigorously."
+    ],
+    "warning": "Sudden or patchy hair loss can indicate an underlying medical condition. Consult a doctor for a proper diagnosis."
+  },
+  "Herpes HPV and other STDs Photos": {
+    "severity": "Moderate",
+    "first_aid": [
+      "Keep the affected area clean and dry to speed up healing.",
+      "Avoid sexual contact while sores or warts are present to prevent transmission.",
+      "Wash your hands thoroughly after touching the affected area."
+    ],
+    "warning": "These are contagious viral infections. You must see a healthcare provider for antiviral prescriptions or clinical removal of warts."
+  },
+  "Light Diseases and Disorders of Pigmentation": {
+    "severity": "Mild",
+    "first_aid": [
+      "Strict sun protection is crucial. Apply broad-spectrum sunscreen (SPF 30+) daily.",
+      "Wear wide-brimmed hats and protective clothing when outdoors.",
+      "Avoid direct sun exposure during peak hours (10 AM to 4 PM)."
+    ],
+    "warning": "While usually cosmetic, new or rapidly changing pigmented spots should be evaluated by a dermatologist to rule out melanoma."
+  },
+  "Lupus and other Connective Tissue diseases": {
+    "severity": "Severe",
+    "first_aid": [
+      "Avoid sun exposure completely, as UV light can trigger severe flare-ups.",
+      "Apply high-SPF, broad-spectrum sunscreen even when indoors near windows.",
+      "Rest and avoid physical exhaustion during a flare-up."
+    ],
+    "warning": "Systemic connective tissue diseases can affect internal organs. This requires ongoing management by a rheumatologist and dermatologist."
+  },
+  "Melanoma Skin Cancer Nevi and Moles": {
+    "severity": "Severe",
+    "first_aid": [
+      "Do not try to remove, scratch, or treat suspicious moles at home.",
+      "Take a clear photograph of the mole next to a ruler to track any changes.",
+      "Keep the area protected from the sun."
+    ],
+    "warning": "Melanoma is the deadliest form of skin cancer. Immediate dermatological evaluation, biopsy, and surgical excision are mandatory."
+  },
+  "Nail Fungus and other Nail Disease": {
+    "severity": "Mild",
+    "first_aid": [
+      "Keep nails trimmed short and file down thick areas.",
+      "Wash and thoroughly dry your feet/hands, especially between the toes/fingers.",
+      "Avoid sharing nail clippers and wear breathable footwear."
+    ],
+    "warning": "Fungal nail infections are notoriously stubborn. Over-the-counter treatments often fail; prescription oral or topical antifungals from a doctor are usually needed."
+  },
+  "Poison Ivy Photos and other Contact Dermatitis": {
+    "severity": "Moderate",
+    "first_aid": [
+      "Immediately wash the skin with lukewarm water and soap to remove plant oils or irritants.",
+      "Wash all clothes, shoes, and pets that may have come into contact with the allergen.",
+      "Apply calamine lotion or over-the-counter hydrocortisone cream to reduce itching."
+    ],
+    "warning": "If the rash covers a large portion of the body, affects the face/genitals, or causes severe swelling, seek medical attention for prescription steroids."
+  },
+  "Psoriasis pictures Lichen Planus and related diseases": {
+    "severity": "Moderate",
+    "first_aid": [
+      "Apply thick, heavy moisturizers daily to help soften plaques and reduce scaling.",
+      "Take daily baths with added colloidal oatmeal or Epsom salts to soothe the skin.",
+      "Avoid picking at scales, as this can trigger worsened flare-ups (Koebner phenomenon)."
+    ],
+    "warning": "These are chronic autoimmune conditions. A dermatologist can prescribe targeted topical treatments, phototherapy, or systemic biologics."
+  },
+  "Scabies Lyme Disease and other Infestations and Bites": {
+    "severity": "Moderate to Severe",
+    "first_aid": [
+      "For tick bites (Lyme risk): Carefully remove the tick with fine-tipped tweezers by grasping it close to the skin and pulling straight up.",
+      "Wash the bite area with rubbing alcohol or soap and water.",
+      "For scabies: Wash all bedding, clothing, and towels in hot water and dry on high heat."
+    ],
+    "warning": "If you develop a 'bullseye' rash after a tick bite, or have widespread severe itching (scabies), you need prescription antibiotics or scabicides from a doctor."
+  },
+  "Seborrheic Keratoses and other Benign Tumors": {
+    "severity": "Mild",
+    "first_aid": [
+      "These 'barnacles of aging' are harmless. Do not attempt to pick or scrape them off.",
+      "If they itch, apply a mild over-the-counter moisturizer.",
+      "If clothing rubs against them, cover loosely with a bandage."
+    ],
+    "warning": "If a lesion grows rapidly, bleeds, or turns black, it should be examined by a doctor to ensure it is not a melanoma masquerading as a benign tumor."
+  },
+  "Systemic Disease": {
+    "severity": "Severe",
+    "first_aid": [
+      "Skin manifestations of systemic diseases (like diabetes, liver disease, or thyroid issues) cannot be treated with local first aid alone.",
+      "Maintain good general skin hygiene and moisturize dry areas.",
+      "Do not apply harsh chemicals or home remedies to the skin lesions."
+    ],
+    "warning": "The skin rash is merely a symptom of an internal problem. Urgent evaluation by an internal medicine specialist is required."
+  },
+  "Tinea Ringworm Candidiasis and other Fungal Infections": {
+    "severity": "Moderate",
+    "first_aid": [
+      "Apply an over-the-counter antifungal cream (like clotrimazole or terbinafine) twice daily.",
+      "Keep the affected area clean, dry, and exposed to air when possible.",
+      "Wash towels and clothing in hot water and do not share personal items."
+    ],
+    "warning": "If the infection does not improve after 2 weeks of OTC treatment, or if it affects the scalp or beard area, prescription oral antifungals are required."
+  },
+  "Urticaria Hives": {
+    "severity": "Moderate",
+    "first_aid": [
+      "Take an over-the-counter non-drowsy antihistamine (like cetirizine or loratadine).",
+      "Apply cool compresses to the itchy areas to soothe the skin.",
+      "Avoid tight clothing, hot showers, and known allergic triggers."
+    ],
+    "warning": "DANGER: If hives are accompanied by swelling of the lips/tongue, difficulty breathing, or dizziness, this is anaphylaxis. Call emergency services immediately."
+  },
+  "Vascular Tumors": {
+    "severity": "Moderate",
+    "first_aid": [
+      "Protect the area from trauma, as vascular tumors (like hemangiomas) can bleed heavily if scratched or cut.",
+      "If bleeding occurs, apply firm, continuous pressure with a clean cloth for 10-15 minutes.",
+      "Do not attempt any home removal techniques."
+    ],
+    "warning": "If bleeding cannot be stopped with pressure, go to the emergency room. Consult a doctor for cosmetic or medical treatment options."
+  },
+  "Vasculitis Photos": {
+    "severity": "Severe",
+    "first_aid": [
+      "Elevate the affected limbs (usually the legs) to reduce swelling and pressure.",
+      "Keep the skin clean and avoid any tight clothing or elastic bands that restrict blood flow.",
+      "Rest and avoid prolonged standing."
+    ],
+    "warning": "Vasculitis is an inflammation of the blood vessels and can affect internal organs. Immediate medical evaluation by a rheumatologist or dermatologist is necessary."
+  },
+  "Warts Molluscum and other Viral Infections": {
+    "severity": "Mild to Moderate",
+    "first_aid": [
+      "Cover the wart or molluscum bumps with a bandage to prevent spreading the virus to others or other parts of your body.",
+      "Do not pick, scratch, or shave over the areas.",
+      "For common warts, you can try over-the-counter salicylic acid patches as directed."
+    ],
+    "warning": "If the warts are painful, spreading rapidly, or located on the face/genitals, do not use OTC treatments. See a doctor for cryotherapy or prescription creams."
+  }
+}
