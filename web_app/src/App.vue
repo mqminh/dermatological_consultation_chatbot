@@ -17,12 +17,18 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        {{ language === 'Vi' ? 'Đang phân tích hình ảnh và trích xuất dữ liệu y khoa...' : 'Analyzing image and extracting medical data...' }}
+        {{ language === 'Vi' ? 'Đang xử lý...' : 'Processing...' }}
       </div>
 
     </div>
 
-    <InputArea :isLoading="isLoading" :lang="language" @send="handleSendMessage" />
+    <InputArea
+        :isLoading="isLoading"
+        :lang="language"
+        :hasDiagnosis="currentDisease !== null"
+        @send-image="handleSendImage"
+        @send-text="handleSendText"
+    />
   </div>
 </template>
 
@@ -31,47 +37,67 @@ import { ref } from 'vue'
 import Header from './components/Header.vue'
 import ChatFeed from './components/ChatFeed.vue'
 import InputArea from './components/InputArea.vue'
-import { sendConsultationRequest } from './services/api'
+import { sendConsultationRequest, sendFollowUpMessage } from './services/api'
 
 const language = ref('En')
 const messages = ref([])
 const isLoading = ref(false)
+const currentDisease = ref(null)
 
-const handleSendMessage = async ({ file, preview }) => {
-  messages.value.push({
-    role: 'user',
-    image: preview
-  })
+const smoothScroll = () => {
+  setTimeout(() => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+  }, 100)
+}
 
+const handleSendImage = async ({ file, preview }) => {
+  messages.value.push({ role: 'user', image: preview })
   isLoading.value = true
-  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+  smoothScroll()
 
   try {
     const data = await sendConsultationRequest(file, language.value)
-
     if (data.success) {
+      currentDisease.value = data.data.disease
       messages.value.push({
-        role: 'bot',
+        role: 'model',
         text: data.data.consultation,
         disease: data.data.disease,
         confidence: data.data.confidence
       })
     } else {
-      messages.value.push({
-        role: 'bot',
-        text: `**Error:** ${data.message}`
-      })
+      messages.value.push({ role: 'model', text: `**Error:** ${data.message}` })
     }
   } catch (error) {
-    messages.value.push({
-      role: 'bot',
-      text: `**Connection Error:** Cannot communicate with the server.`
-    })
+    messages.value.push({ role: 'model', text: `**Connection Error:** Cannot communicate with the server.` })
   } finally {
     isLoading.value = false
-    setTimeout(() => {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
-    }, 100)
+    smoothScroll()
+  }
+}
+
+const handleSendText = async (text) => {
+  messages.value.push({ role: 'user', text: text })
+  isLoading.value = true
+  smoothScroll()
+
+  const historyPayload = messages.value.map(msg => ({
+    role: msg.role,
+    text: msg.text
+  }))
+
+  try {
+    const data = await sendFollowUpMessage(text, currentDisease.value, historyPayload, language.value)
+    if (data.success) {
+      messages.value.push({ role: 'model', text: data.data.reply })
+    } else {
+      messages.value.push({ role: 'model', text: `**Error:** ${data.message}` })
+    }
+  } catch (error) {
+    messages.value.push({ role: 'model', text: `**Connection Error:** Cannot communicate with the server.` })
+  } finally {
+    isLoading.value = false
+    smoothScroll()
   }
 }
 </script>

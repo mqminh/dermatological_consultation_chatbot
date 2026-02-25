@@ -12,6 +12,7 @@ class LLMService:
 
         genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
         self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.model_name = 'gemini-2.5-flash'
 
     def generate_advice(self, disease_name, confidence, lang="En"):
         if disease_name not in self.medical_knowledge:
@@ -47,5 +48,34 @@ class LLMService:
         except Exception as e:
             return str(e)
 
+    def chat_followup(self, user_message, disease_name, history, lang="En"):
+        system_instruction = f"""
+        You are a medical virtual assistant specializing in dermatological first aid.
+        The user was previously diagnosed with '{disease_name}' by the vision system.
+        Answer their follow-up questions accurately based on this context.
+        Do not prescribe medication. Always advise consulting a doctor for serious concerns.
+        """
+
+        if lang == "Vi":
+            system_instruction += " IMPORTANT: You MUST answer entirely in Vietnamese."
+
+        try:
+            model = genai.GenerativeModel(
+                model_name=self.model_name,
+                system_instruction=system_instruction
+            )
+
+            formatted_history = []
+            for msg in history:
+                role = 'user' if msg['role'] == 'user' else 'model'
+                text = msg.get('text', '[Image provided by user]' if role == 'user' else '')
+                if text:
+                    formatted_history.append({'role': role, 'parts': [text]})
+
+            chat = model.start_chat(history=formatted_history)
+            response = chat.send_message(user_message)
+            return response.text
+        except Exception as e:
+            return str(e)
 
 llm_service = LLMService()

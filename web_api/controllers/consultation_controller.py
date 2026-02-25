@@ -43,3 +43,25 @@ def consult():
 
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+
+@consultation_bp.route('/chat', methods=['POST'])
+def chat():
+    data = request.get_json()
+    if not data or 'message' not in data:
+        return jsonify({"success": False, "message": "Missing message"}), 400
+
+    user_message = data['message']
+    disease = data.get('disease', 'Unknown')
+    history = data.get('history', [])
+    lang = data.get('lang', 'En')
+
+    try:
+        reply = llm_service.chat_followup(user_message, disease, history, lang)
+        return jsonify({
+            "success": True,
+            "data": {
+                "reply": reply
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500

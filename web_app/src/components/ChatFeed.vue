@@ -4,9 +4,10 @@
 
       <div v-if="msg.role === 'user'" class="flex flex-col gap-4">
         <span class="font-bold text-gray-400 uppercase tracking-wider text-xs">
-          {{ lang === 'Vi' ? 'Hình ảnh đầu vào' : 'Input Image' }}
+          {{ lang === 'Vi' ? 'Bạn' : 'You' }}
         </span>
         <img v-if="msg.image" :src="msg.image" class="w-64 h-64 object-cover rounded-md shadow-sm border border-gray-200" />
+        <p v-if="msg.text" class="text-gray-900 bg-gray-100 p-4 rounded-md inline-block max-w-2xl">{{ msg.text }}</p>
       </div>
 
       <div v-else class="flex flex-col gap-5 mt-6">
