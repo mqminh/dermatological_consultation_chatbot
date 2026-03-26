@@ -1,0 +1,32 @@
+QUANTITATIVE EVALUATION REPORT:
+                                                                    precision    recall  f1-score   support
+
+                                           Acne and Rosacea Photos       0.85      0.91      0.88       110
+Actinic Keratosis Basal Cell Carcinoma and other Malignant Lesions       0.92      0.87      0.90       111
+                                          Atopic Dermatitis Photos       0.71      0.59      0.64       191
+                                        Basal Cell Carcinoma (BCC)       0.92      0.90      0.91       195
+                               Benign Keratosis-like Lesions (BKL)       0.90      0.91      0.90       208
+                                            Bullous Disease Photos       0.93      0.96      0.95       119
+                Cellulitis Impetigo and other Bacterial Infections       0.86      1.00      0.92       136
+                                                     Eczema Photos       0.60      0.69      0.65       186
+                                      Exanthems and Drug Eruptions       0.92      1.00      0.96       121
+                 Hair Loss Photos Alopecia and other Hair Diseases       0.94      0.99      0.97       129
+                                  Herpes HPV and other STDs Photos       0.89      0.98      0.93       126
+                      Light Diseases and Disorders of Pigmentation       0.91      0.96      0.94       107
+                        Lupus and other Connective Tissue diseases       0.90      1.00      0.95       106
+                               Melanoma Skin Cancer Nevi and Moles       0.98      0.97      0.97       218
+                                Nail Fungus and other Nail Disease       0.87      0.91      0.89       110
+                    Poison Ivy Photos and other Contact Dermatitis       0.98      1.00      0.99       126
+             Psoriasis pictures Lichen Planus and related diseases       0.62      0.53      0.57       197
+             Scabies Lyme Disease and other Infestations and Bites       0.97      0.97      0.97       118
+                      Seborrheic Keratoses and other Benign Tumors       0.81      0.65      0.72       200
+                                                  Systemic Disease       0.94      0.91      0.92       121
+            Tinea Ringworm Candidiasis and other Fungal Infections       0.82      0.66      0.73       196
+                                                   Urticaria Hives       1.00      1.00      1.00       125
+                                                   Vascular Tumors       0.98      1.00      0.99       122
+                                                 Vasculitis Photos       0.87      1.00      0.93       118
+                        Warts Molluscum and other Viral Infections       0.65      0.70      0.67       224
+
+                                                          accuracy                           0.86      3720
+                                                         macro avg       0.87      0.88      0.87      3720
+                                                      weighted avg       0.85      0.86      0.85      3720

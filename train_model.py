@@ -2,7 +2,6 @@ import tensorflow as tf
 from tensorflow.keras import layers, models, optimizers
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 import matplotlib.pyplot as plt
-import os
 from sklearn.utils import class_weight
 import numpy as np
 
@@ -232,3 +231,54 @@ print("Biểu đồ kết quả: training_result_optimized.png")
 with open('class_names.txt', 'w') as f:
     for cls in class_names:
         f.write(f"{cls}\n")
+
+# ==========================================
+# 9. EVALUATE MODEL AND PLOT CONFUSION MATRIX
+# ==========================================
+print("\n--- Generating Confusion Matrix and Classification Report ---")
+from sklearn.metrics import classification_report, confusion_matrix
+import seaborn as sns
+
+# 1. Load the BEST model weights saved during training
+model.load_weights("best_skin_model_v2.h5")
+
+# 2. Extract true labels (y_true) and predictions (y_pred) from validation set
+y_true = []
+y_pred_probs = []
+
+for images, labels in val_ds:
+    y_true.extend(labels.numpy())
+    preds = model.predict(images, verbose=0)
+    y_pred_probs.extend(preds)
+
+y_true = np.array(y_true)
+y_pred = np.argmax(np.array(y_pred_probs), axis=1)
+
+# 3. Print and save Classification Report (Accuracy, Precision, Recall, F1-score)
+report = classification_report(y_true, y_pred, target_names=class_names)
+print("\nQUANTITATIVE EVALUATION REPORT:")
+print(report)
+
+# Using utf-8 encoding as a standard best practice
+with open("classification_report.txt", "w", encoding="utf-8") as f:
+    f.write("QUANTITATIVE EVALUATION REPORT:\n")
+    f.write(report)
+
+# 4. Plot and save the Confusion Matrix
+cm = confusion_matrix(y_true, y_pred)
+plt.figure(figsize=(14, 12))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=class_names, yticklabels=class_names)
+plt.xlabel('Predicted Condition', fontsize=12)
+plt.ylabel('Actual Condition', fontsize=12)
+plt.title('Confusion Matrix of EfficientNetB3', fontsize=15, fontweight='bold')
+
+# Rotate X-axis labels to prevent overlap
+plt.xticks(rotation=45, ha='right')
+plt.yticks(rotation=0)
+plt.tight_layout()
+
+# Save the figure
+plt.savefig('confusion_matrix.png', dpi=300)
+print("\n✅ Saved Confusion Matrix to: confusion_matrix.png")
+print("✅ Saved Quantitative Report to: classification_report.txt")
