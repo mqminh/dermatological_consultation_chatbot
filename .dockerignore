@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.DS_Store
+.idea
+*.pyc
+__pycache__
+.env
+.venv
+env/
+dist/
+build/
+.pytest_cache
+training_history.png
+training_result_optimized.png
+confusion_matrix.png
