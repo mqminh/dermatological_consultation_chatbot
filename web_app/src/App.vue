@@ -1,23 +1,23 @@
 <template>
   <div class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.18),_transparent_30%),linear-gradient(135deg,_#f8fbff_0%,_#eef5ff_45%,_#f9fbff_100%)] text-slate-900 font-sans">
-    <div class="mx-auto flex max-w-5xl flex-col px-4 pb-40 pt-6 sm:px-6 lg:px-8">
+    <div class="mx-auto flex max-w-5xl flex-col px-3 pb-40 pt-3 sm:px-6 sm:pt-6 lg:px-8">
       <div class="pointer-events-none absolute inset-x-0 top-0 h-48 overflow-hidden">
         <div class="mx-auto h-40 w-72 rounded-full bg-cyan-400/20 blur-3xl"></div>
       </div>
 
       <Header v-model="language" />
 
-      <main class="relative z-10 mt-6 rounded-[32px] border border-white/70 bg-white/80 p-4 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-6 lg:p-8">
-        <div v-if="messages.length === 0" class="flex flex-col items-center justify-center rounded-[24px] border border-dashed border-sky-200 bg-sky-50/70 px-6 py-16 text-center">
-          <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-400 text-white shadow-lg shadow-sky-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <main class="relative z-10 mt-4 rounded-[24px] border border-white/70 bg-white/80 p-3 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:mt-6 sm:rounded-[32px] sm:p-6 lg:p-8">
+        <div v-if="messages.length === 0" class="flex flex-col items-center justify-center rounded-[20px] border border-dashed border-sky-200 bg-sky-50/70 px-4 py-12 text-center sm:px-6 sm:py-16">
+          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-400 text-white shadow-lg shadow-sky-200 sm:h-16 sm:w-16">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L13 13m-1-8l-4 4m0 0l-4-4m4 4V4" />
             </svg>
           </div>
-          <h2 class="text-2xl font-semibold text-slate-800">
+          <h2 class="text-xl font-semibold text-slate-800 sm:text-2xl">
             {{ language === 'Vi' ? 'Bắt đầu một buổi tư vấn da liễu' : 'Start a dermatology consultation' }}
           </h2>
-          <p class="mt-2 max-w-2xl text-base text-slate-600">
+          <p class="mt-2 max-w-2xl text-sm text-slate-600 sm:text-base">
             {{ language === 'Vi' ? 'Tải lên ảnh da liễu để nhận phân tích ban đầu và lời khuyên sơ bộ.' : 'Upload a skin image to get an initial analysis and preliminary guidance.' }}
           </p>
         </div>
