@@ -1,9 +1,8 @@
 import os
 import json
 import google.generativeai as genai
-from flask import Flask
 
-KNOWLEDGE_PATH = './data/medical_knowledge.json'
+KNOWLEDGE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'medical_knowledge.json')
 
 class LLMService:
     def __init__(self):
@@ -60,20 +59,15 @@ class LLMService:
             system_instruction += " IMPORTANT: You MUST answer entirely in Vietnamese."
 
         try:
-            model = genai.GenerativeModel(
-                model_name=self.model_name,
-                system_instruction=system_instruction
-            )
-
-            formatted_history = []
+            prompt = f"{system_instruction}\n\nConversation history:\n"
             for msg in history:
-                role = 'user' if msg['role'] == 'user' else 'model'
-                text = msg.get('text', '[Image provided by user]' if role == 'user' else '')
+                role = 'User' if msg['role'] == 'user' else 'Assistant'
+                text = msg.get('text', '')
                 if text:
-                    formatted_history.append({'role': role, 'parts': [text]})
+                    prompt += f"{role}: {text}\n"
 
-            chat = model.start_chat(history=formatted_history)
-            response = chat.send_message(user_message)
+            prompt += f"\nUser now asks: {user_message}"
+            response = self.model.generate_content(prompt)
             return response.text
         except Exception as e:
             return str(e)
