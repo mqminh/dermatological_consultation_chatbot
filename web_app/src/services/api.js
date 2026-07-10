@@ -1,9 +1,11 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || `http://${window.location.hostname}:5001`
+
 export const sendConsultationRequest = async (file, lang) => {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('lang', lang)
 
-    const response = await fetch('http://127.0.0.1:5000/api/consult', {
+    const response = await fetch(`${API_BASE_URL}/api/consult`, {
         method: 'POST',
         body: formData
     })
@@ -16,7 +18,7 @@ export const sendConsultationRequest = async (file, lang) => {
 }
 
 export const sendFollowUpMessage = async (message, disease, history, lang) => {
-    const response = await fetch('http://127.0.0.1:5000/api/chat', {
+    const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

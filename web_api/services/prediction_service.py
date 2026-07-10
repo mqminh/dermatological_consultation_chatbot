@@ -5,8 +5,11 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 
 IMG_SIZE = (300, 300)
-MODEL_PATH = '../best_skin_model_v2.h5'
-CLASS_NAMES_PATH = '../class_names.txt'
+SERVICE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+BASE_DIR = os.path.dirname(SERVICE_DIR)
+MODEL_PATH = os.path.join(BASE_DIR, 'best_skin_model_v2.h5')
+CLASS_NAMES_PATH = os.path.join(BASE_DIR, 'class_names.txt')
 
 
 class PredictionService:
