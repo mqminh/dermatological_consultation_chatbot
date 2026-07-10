@@ -14,20 +14,32 @@
       </div>
     </div>
 
-    <select
-        :value="modelValue"
-        @change="$emit('update:modelValue', $event.target.value)"
-        class="cursor-pointer rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-200"
-    >
-      <option value="En">English</option>
-      <option value="Vi">Tiếng Việt</option>
-    </select>
+    <div class="flex flex-wrap items-center gap-2">
+      <select
+          :value="llmMode"
+          @change="$emit('update:llmMode', $event.target.value)"
+          class="cursor-pointer rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-200"
+      >
+        <option value="local">Local Ollama</option>
+        <option value="gemini">Gemini</option>
+      </select>
+
+      <select
+          :value="language"
+          @change="$emit('update:language', $event.target.value)"
+          class="cursor-pointer rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-200"
+      >
+        <option value="En">English</option>
+        <option value="Vi">Tiếng Việt</option>
+      </select>
+    </div>
   </header>
 </template>
 
 <script setup>
 defineProps({
-  modelValue: String
+  language: String,
+  llmMode: String
 })
-defineEmits(['update:modelValue'])
+defineEmits(['update:language', 'update:llmMode'])
 </script>

@@ -17,6 +17,7 @@ def consult():
         return jsonify({"success": False, "message": "No selected file"}), 400
 
     lang = request.form.get('lang', 'En')
+    llm_mode = request.form.get('llm_mode', request.form.get('mode', 'gemini'))
 
     try:
         filename = secure_filename(file.filename)
@@ -27,7 +28,7 @@ def consult():
         disease = pred_result['disease']
         confidence = pred_result['confidence']
 
-        advice = llm_service.generate_advice(disease, confidence, lang)
+        advice = llm_service.generate_advice(disease, confidence, lang, llm_mode)
 
         os.remove(file_path)
 
@@ -54,9 +55,10 @@ def chat():
     disease = data.get('disease', 'Unknown')
     history = data.get('history', [])
     lang = data.get('lang', 'En')
+    llm_mode = data.get('llm_mode', data.get('mode', 'gemini'))
 
     try:
-        reply = llm_service.chat_followup(user_message, disease, history, lang)
+        reply = llm_service.chat_followup(user_message, disease, history, lang, llm_mode)
         return jsonify({
             "success": True,
             "data": {

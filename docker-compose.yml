@@ -12,6 +12,9 @@ services:
     environment:
       - FLASK_ENV=production
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - USE_LOCAL_LLM=${USE_LOCAL_LLM:-true}
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:3b}
     volumes:
       - ./uploads:/app/uploads
     depends_on:

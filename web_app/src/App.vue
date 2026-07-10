@@ -5,7 +5,7 @@
         <div class="mx-auto h-40 w-72 rounded-full bg-cyan-400/20 blur-3xl"></div>
       </div>
 
-      <Header v-model="language" />
+      <Header v-model:language="language" v-model:llmMode="llmMode" />
 
       <main class="relative z-10 mt-4 rounded-[24px] border border-white/70 bg-white/80 p-3 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:mt-6 sm:rounded-[32px] sm:p-6 lg:p-8">
         <div v-if="messages.length === 0" class="flex flex-col items-center justify-center rounded-[20px] border border-dashed border-sky-200 bg-sky-50/70 px-4 py-12 text-center sm:px-6 sm:py-16">
@@ -52,6 +52,7 @@ import InputArea from './components/InputArea.vue'
 import { sendConsultationRequest, sendFollowUpMessage } from './services/api'
 
 const language = ref('En')
+const llmMode = ref('local')
 const messages = ref([])
 const isLoading = ref(false)
 const currentDisease = ref(null)
@@ -68,7 +69,7 @@ const handleSendImage = async ({ file, preview }) => {
   smoothScroll()
 
   try {
-    const data = await sendConsultationRequest(file, language.value)
+    const data = await sendConsultationRequest(file, language.value, llmMode.value)
     if (data.success) {
       currentDisease.value = data.data.disease
       messages.value.push({
@@ -99,7 +100,7 @@ const handleSendText = async (text) => {
   }))
 
   try {
-    const data = await sendFollowUpMessage(text, currentDisease.value, historyPayload, language.value)
+    const data = await sendFollowUpMessage(text, currentDisease.value, historyPayload, language.value, llmMode.value)
     if (data.success) {
       messages.value.push({ role: 'model', text: data.data.reply })
     } else {
